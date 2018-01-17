@@ -1,0 +1,144 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), DocumentFormat.OpenXml.Package.props))\DocumentFormat.OpenXml.Package.props" />
+
+  <PropertyGroup>
+    <!-- TargetFrameworks can be set to various combinations as described in Directory.Build.props -->
+    <!--
+      .NET Standard target must be first to avoid a ResXFileCodeGenerator issue
+      (tracked at https://github.com/dotnet/project-system/issues/1519)
+    -->
+    <TargetFrameworks Condition=" '$(ProjectLoadStyle)' == 'DevCore' ">netstandard1.3</TargetFrameworks>
+    <TargetFrameworks Condition=" '$(ProjectLoadStyle)' == 'DevFramework' ">net46</TargetFrameworks>
+    <TargetFrameworks Condition=" '$(ProjectLoadStyle)' == 'All' ">netstandard1.3;net35;net40;net46</TargetFrameworks>
+
+    <NoWarn>$(NoWarn);3003</NoWarn>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Remove all files under System as they need to be specifically opted into. They are
+         helper files to fill the gaps of the various platforms that are targeted -->
+    <Compile Remove="System\**\*.cs" />
+    <Compile Include="System\UriHelper.cs" />
+    <Compile Remove="PartActivator.Custom.cs" />
+  </ItemGroup>
+
+  <!--
+    Since this project supports multiple configurations which don't all have the same surface area, the following define
+    constants are used to conditionally compile features:
+
+    FEATURE_ABSTRACT_XML_CLOSE       : XmlWriter.Close is defined as abstract
+    FEATURE_ARRAY_EMPTY              : Array.Empty exists
+    FEATURE_CLOSE                    : Stream.Close is available in the platform
+    FEATURE_DCS_SETTINGS             : DataContractSerializer settings class exists
+    FEATURE_SERIALIZATION            : Serialization using ISerializable is in the platform
+    FEATURE_SYSTEMEXCEPTION          : SytemException is available in the platform
+    FEATURE_XML_DISPOSE_PROTECTED    : XmlWriter.Dispose is protected
+    FEATURE_XML_PROHIBIT_DTD         : XML settings only has ProhibitDtd property
+    FEATURE_XML_QUOTECHAR            : XmlReader.QuoteChar is an abstract member
+    FEATURE_XML_SCHEMA               : XML Schema is available in the platform
+    FEATURE_XML_VERIFYTOKEN          : XmlConvert.VerifyTOKEN is available in the platform
+  -->
+
+  <Choose>
+    <When Condition=" '$(TargetFramework)' == 'net35' OR '$(TargetFramework)' == 'net40' ">
+      <PropertyGroup>
+        <DefineConstants>$(DefineConstants);FEATURE_ABSTRACT_XML_CLOSE;FEATURE_CLOSE;FEATURE_SERIALIZATION;FEATURE_SYSTEMEXCEPTION;FEATURE_XML_DISPOSE_PROTECTED;FEATURE_XML_QUOTECHAR;FEATURE_XML_SCHEMA;FEATURE_XML_VERIFYTOKEN</DefineConstants>
+        <DefineConstants Condition=" '$(TargetFramework)' == 'net35'">$(DefineConstants);FEATURE_XML_PROHIBIT_DTD</DefineConstants>
+      </PropertyGroup>
+
+      <ItemGroup>
+        <Reference Include="System" />
+        <Reference Include="System.Runtime.Serialization" />
+        <Reference Include="System.Xml" />
+        <Reference Include="System.Xml.Linq" />
+        <Reference Include="WindowsBase" />
+      </ItemGroup>
+
+      <ItemGroup>
+        <Compile Include="System\Collections\Generic\IReadOnlyList.cs" />
+        <Compile Include="System\Collections\Generic\IReadOnlyCollection.cs" />
+        <Compile Include="System\Reflection\TypeExtensions.cs" />
+      </ItemGroup>
+
+      <ItemGroup Condition=" '$(TargetFramework)' == 'net35' ">
+        <Compile Include="System\IO\StreamCopyExtensions.cs" />
+      </ItemGroup>
+    </When>
+
+    <When Condition=" '$(TargetFramework)' == 'net46' ">
+      <PropertyGroup>
+        <DefineConstants>$(DefineConstants);FEATURE_ARRAY_EMPTY;FEATURE_DCS_SETTINGS;FEATURE_CLOSE;FEATURE_SERIALIZATION;FEATURE_SYSTEMEXCEPTION;FEATURE_XML_QUOTECHAR;FEATURE_XML_SCHEMA;FEATURE_XML_VERIFYTOKEN</DefineConstants>
+      </PropertyGroup>
+
+      <ItemGroup Condition=" '$(TargetFramework)' == 'net46' ">
+        <Reference Include="System" />
+        <Reference Include="System.Runtime.Serialization" />
+        <Reference Include="System.Xml" />
+        <Reference Include="System.Xml.Linq" />
+      </ItemGroup>
+
+      <ItemGroup>
+        <PackageReference Include="System.IO.Packaging" Version="4.4.0" />
+      </ItemGroup>
+    </When>
+
+    <When Condition=" '$(TargetFramework)' == 'netstandard1.3' ">
+      <PropertyGroup>
+        <DefineConstants> $(DefineConstants);FEATURE_DCS_SETTINGS;FEATURE_ARRAY_EMPTY</DefineConstants>
+      </PropertyGroup>
+
+      <ItemGroup>
+        <PackageReference Include="System.IO.Packaging" Version="4.4.0" />
+        <PackageReference Include="System.Runtime.Serialization.Xml" Version="4.3.0" />
+      </ItemGroup>
+
+      <!-- In order to support .NET Native, we need to include an appropriate .rd.xml -->
+      <ItemGroup>
+        <EmbeddedResource Include="Properties\DocumentFormat.OpenXml.rd.xml" />
+      </ItemGroup>
+
+      <ItemGroup>
+        <Compile Include="System\ICloneable.cs" />
+        <Compile Include="System\NonSerializedAttribute.cs" />
+        <Compile Include="System\SerializableAttribute.cs" />
+        <Compile Include="System\Reflection\SubclassExtensions.cs" />
+
+        <Compile Include="PartActivator.Custom.cs" />
+        <Compile Remove="PartActivator.Activator.cs" />
+      </ItemGroup>
+    </When>
+  </Choose>
+
+  <!-- Include the constraint data that are stored in bin files -->
+  <ItemGroup>
+    <EmbeddedResource Include="GeneratedCode\*.bin" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Resources\ExceptionMessages.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ExceptionMessages.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Validation\ValidationResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ValidationResources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\ExceptionMessages.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ExceptionMessages.Designer.cs</LastGenOutput>
+      <CustomToolNamespace>DocumentFormat.OpenXml</CustomToolNamespace>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Validation\ValidationResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ValidationResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+</Project>

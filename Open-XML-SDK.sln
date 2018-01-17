@@ -1,11 +1,24 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Open-XML-SDK", "Open-XML-SDK.csproj", "{E5D39C6A-9067-477E-B0D3-A9419B86E6E5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DocumentFormat.OpenXml", "DocumentFormat.OpenXml\DocumentFormat.OpenXml.csproj", "{16941A4A-F8DE-4C8D-BA2B-3C0774848D4B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.IO.Packaging", "System.IO.Packaging\System.IO.Packaging.csproj", "{4C88A3AD-1241-4A04-854B-8372DF29828D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DocumentFormat.OpenXml.Tests", "DocumentFormat.OpenXml.Tests\DocumentFormat.OpenXml.Tests.csproj", "{B92240AF-6E87-4428-9C5A-371178A04E5B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0B53C729-D408-450D-B755-7A57184CDE93}"
+	ProjectSection(SolutionItems) = preProject
+		appveyor.yml = appveyor.yml
+		Directory.Build.props = Directory.Build.props
+		Directory.Build.targets = Directory.Build.targets
+		GitVersion.yml = GitVersion.yml
+		LICENSE = LICENSE
+		README.md = README.md
+		rules.ruleset = rules.ruleset
+		stylecop.json = stylecop.json
+		Tests.targets = Tests.targets
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,16 +26,19 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{E5D39C6A-9067-477E-B0D3-A9419B86E6E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E5D39C6A-9067-477E-B0D3-A9419B86E6E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E5D39C6A-9067-477E-B0D3-A9419B86E6E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E5D39C6A-9067-477E-B0D3-A9419B86E6E5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4C88A3AD-1241-4A04-854B-8372DF29828D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4C88A3AD-1241-4A04-854B-8372DF29828D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4C88A3AD-1241-4A04-854B-8372DF29828D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4C88A3AD-1241-4A04-854B-8372DF29828D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{16941A4A-F8DE-4C8D-BA2B-3C0774848D4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16941A4A-F8DE-4C8D-BA2B-3C0774848D4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16941A4A-F8DE-4C8D-BA2B-3C0774848D4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16941A4A-F8DE-4C8D-BA2B-3C0774848D4B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B92240AF-6E87-4428-9C5A-371178A04E5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B92240AF-6E87-4428-9C5A-371178A04E5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B92240AF-6E87-4428-9C5A-371178A04E5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B92240AF-6E87-4428-9C5A-371178A04E5B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6F476383-E917-43D1-A1E5-9A61A47DA3F5}
 	EndGlobalSection
 EndGlobal
